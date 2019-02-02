@@ -775,8 +775,3 @@ So, in summary.
 That's all folks!
 
 Thank you for reading
-
-
-```python
-
-```
