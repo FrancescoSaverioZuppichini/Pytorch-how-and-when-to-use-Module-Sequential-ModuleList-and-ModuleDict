@@ -2,7 +2,7 @@
 # Pytorch: how and when to use Module, Sequential, ModuleList and ModuleDict
 ### Effective way to share, reuse and break down the complexity of your models
 
-Updated at Pytorch 1.3
+Updated at Pytorch 1.5
 
 You can find the code [here](https://github.com/FrancescoSaverioZuppichini/Pytorch-how-and-when-to-use-Module-Sequential-ModuleList-and-ModuleDict)
 
