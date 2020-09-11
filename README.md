@@ -38,9 +38,9 @@ class MyCNNClassifier(nn.Module):
         self.bn1 = nn.BatchNorm2d(32)
         
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)
-        self.bn2 = nn.BatchNorm2d(32)
+        self.bn2 = nn.BatchNorm2d(64)
 
-        self.fc1 = nn.Linear(32 * 28 * 28, 1024)
+        self.fc1 = nn.Linear(64 * 28 * 28, 1024)
         self.fc2 = nn.Linear(1024, n_classes)
         
     def forward(self, x):
@@ -446,10 +446,10 @@ class MyCNNClassifier(nn.Module):
         self.enc_sizes = [in_c, *enc_sizes]
         self.dec_sizes = [32 * 28 * 28, *dec_sizes]
 
-        conv_blokcs = [conv_block(in_f, out_f, kernel_size=3, padding=1) 
+        conv_blocks = [conv_block(in_f, out_f, kernel_size=3, padding=1) 
                        for in_f, out_f in zip(self.enc_sizes, self.enc_sizes[1:])]
         
-        self.encoder = nn.Sequential(*conv_blokcs)
+        self.encoder = nn.Sequential(*conv_blocks)
 
         
         dec_blocks = [dec_block(in_f, out_f) 
@@ -466,6 +466,7 @@ class MyCNNClassifier(nn.Module):
         x = x.view(x.size(0), -1) # flat
         
         x = self.decoder(x)
+        x = self.last(x)
         
         return x
 ```
@@ -693,11 +694,11 @@ def dec_block(in_f, out_f):
 class MyEncoder(nn.Module):
     def __init__(self, enc_sizes, *args, **kwargs):
         super().__init__()
-        self.conv_blokcs = nn.Sequential(*[conv_block(in_f, out_f, kernel_size=3, padding=1, *args, **kwargs) 
+        self.conv_blocks = nn.Sequential(*[conv_block(in_f, out_f, kernel_size=3, padding=1, *args, **kwargs) 
                        for in_f, out_f in zip(enc_sizes, enc_sizes[1:])])
         
         def forward(self, x):
-            return self.conv_blokcs(x)
+            return self.conv_blocks(x)
         
 class MyDecoder(nn.Module):
     def __init__(self, dec_sizes, n_classes):
