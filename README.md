@@ -2,7 +2,7 @@
 # Pytorch: how and when to use Module, Sequential, ModuleList and ModuleDict
 ### Effective way to share, reuse and break down the complexity of your models
 
-Updated at Pytorch 4.1
+Updated at Pytorch 1.5
 
 You can find the code [here](https://github.com/FrancescoSaverioZuppichini/Pytorch-how-and-when-to-use-Module-Sequential-ModuleList-and-ModuleDict)
 
@@ -533,11 +533,11 @@ class MyCNNClassifier(nn.Module):
     def __init__(self, in_c, enc_sizes, dec_sizes,  n_classes):
         super().__init__()
         self.enc_sizes = [in_c, *enc_sizes]
-        self.dec_sizes = [32 * 28 * 28, *dec_sizes]
+        self.dec_sizes = [self.enc_sizes[-1] * 28 * 28, *dec_sizes]
 
         self.encoder = MyEncoder(self.enc_sizes)
         
-        self.decoder = MyDecoder(dec_sizes, n_classes)
+        self.decoder = MyDecoder(self.dec_sizes, n_classes)
         
     def forward(self, x):
         x = self.encoder(x)
@@ -573,6 +573,10 @@ print(model)
       (decoder): MyDecoder(
         (dec_blocks): Sequential(
           (0): Sequential(
+            (0): Linear(in_features=50176, out_features=1024, bias=True)
+            (1): Sigmoid()
+          )
+          (1): Sequential(
             (0): Linear(in_features=1024, out_features=512, bias=True)
             (1): Sigmoid()
           )
