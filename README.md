@@ -2,7 +2,7 @@
 # Pytorch: how and when to use Module, Sequential, ModuleList and ModuleDict
 ### Effective way to share, reuse and break down the complexity of your models
 
-Updated at Pytorch 1.5
+Updated at Pytorch 4.1
 
 You can find the code [here](https://github.com/FrancescoSaverioZuppichini/Pytorch-how-and-when-to-use-Module-Sequential-ModuleList-and-ModuleDict)
 
@@ -71,8 +71,8 @@ print(model)
       (conv1): Conv2d(1, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
       (bn1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
       (conv2): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-      (bn2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (fc1): Linear(in_features=25088, out_features=1024, bias=True)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (fc1): Linear(in_features=50176, out_features=1024, bias=True)
       (fc2): Linear(in_features=1024, out_features=10, bias=True)
     )
 
@@ -105,7 +105,7 @@ class MyCNNClassifier(nn.Module):
         )
         
         self.decoder = nn.Sequential(
-            nn.Linear(32 * 28 * 28, 1024),
+            nn.Linear(64 * 28 * 28, 1024),
             nn.Sigmoid(),
             nn.Linear(1024, n_classes)
         )
@@ -140,7 +140,7 @@ print(model)
         (2): ReLU()
       )
       (decoder): Sequential(
-        (0): Linear(in_features=25088, out_features=1024, bias=True)
+        (0): Linear(in_features=50176, out_features=1024, bias=True)
         (1): Sigmoid()
         (2): Linear(in_features=1024, out_features=10, bias=True)
       )
@@ -174,7 +174,7 @@ class MyCNNClassifier(nn.Module):
 
         
         self.decoder = nn.Sequential(
-            nn.Linear(32 * 28 * 28, 1024),
+            nn.Linear(64 * 28 * 28, 1024),
             nn.Sigmoid(),
             nn.Linear(1024, n_classes)
         )
@@ -209,7 +209,7 @@ print(model)
         (2): ReLU()
       )
       (decoder): Sequential(
-        (0): Linear(in_features=25088, out_features=1024, bias=True)
+        (0): Linear(in_features=50176, out_features=1024, bias=True)
         (1): Sigmoid()
         (2): Linear(in_features=1024, out_features=10, bias=True)
       )
@@ -230,7 +230,7 @@ class MyCNNClassifier(nn.Module):
 
         
         self.decoder = nn.Sequential(
-            nn.Linear(32 * 28 * 28, 1024),
+            nn.Linear(64 * 28 * 28, 1024),
             nn.Sigmoid(),
             nn.Linear(1024, n_classes)
         )
@@ -266,7 +266,7 @@ print(model)
         )
       )
       (decoder): Sequential(
-        (0): Linear(in_features=25088, out_features=1024, bias=True)
+        (0): Linear(in_features=50176, out_features=1024, bias=True)
         (1): Sigmoid()
         (2): Linear(in_features=1024, out_features=10, bias=True)
       )
@@ -305,7 +305,7 @@ class MyCNNClassifier(nn.Module):
 
         
         self.decoder = nn.Sequential(
-            nn.Linear(32 * 28 * 28, 1024),
+            nn.Linear(64 * 28 * 28, 1024),
             nn.Sigmoid(),
             nn.Linear(1024, n_classes)
         )
@@ -341,7 +341,7 @@ print(model)
         )
       )
       (decoder): Sequential(
-        (0): Linear(in_features=25088, out_features=1024, bias=True)
+        (0): Linear(in_features=50176, out_features=1024, bias=True)
         (1): Sigmoid()
         (2): Linear(in_features=1024, out_features=10, bias=True)
       )
@@ -375,14 +375,14 @@ class MyCNNClassifier(nn.Module):
         super().__init__()
         self.enc_sizes = [in_c, *enc_sizes]
         
-        conv_blokcs = [conv_block(in_f, out_f, kernel_size=3, padding=1) 
+        conv_blocks = [conv_block(in_f, out_f, kernel_size=3, padding=1) 
                        for in_f, out_f in zip(self.enc_sizes, self.enc_sizes[1:])]
         
-        self.encoder = nn.Sequential(*conv_blokcs)
+        self.encoder = nn.Sequential(*conv_blocks)
 
         
         self.decoder = nn.Sequential(
-            nn.Linear(32 * 28 * 28, 1024),
+            nn.Linear(64 * 28 * 28, 1024),
             nn.Sigmoid(),
             nn.Linear(1024, n_classes)
         )
@@ -423,7 +423,7 @@ print(model)
         )
       )
       (decoder): Sequential(
-        (0): Linear(in_features=25088, out_features=1024, bias=True)
+        (0): Linear(in_features=50176, out_features=1024, bias=True)
         (1): Sigmoid()
         (2): Linear(in_features=1024, out_features=10, bias=True)
       )
@@ -444,7 +444,7 @@ class MyCNNClassifier(nn.Module):
     def __init__(self, in_c, enc_sizes, dec_sizes,  n_classes):
         super().__init__()
         self.enc_sizes = [in_c, *enc_sizes]
-        self.dec_sizes = [32 * 28 * 28, *dec_sizes]
+        self.dec_sizes = [64 * 28 * 28, *dec_sizes]
 
         conv_blocks = [conv_block(in_f, out_f, kernel_size=3, padding=1) 
                        for in_f, out_f in zip(self.enc_sizes, self.enc_sizes[1:])]
@@ -466,7 +466,6 @@ class MyCNNClassifier(nn.Module):
         x = x.view(x.size(0), -1) # flat
         
         x = self.decoder(x)
-        x = self.last(x)
         
         return x
 ```
@@ -492,7 +491,7 @@ print(model)
       )
       (decoder): Sequential(
         (0): Sequential(
-          (0): Linear(in_features=25088, out_features=1024, bias=True)
+          (0): Linear(in_features=50176, out_features=1024, bias=True)
           (1): Sigmoid()
         )
         (1): Sequential(
@@ -513,11 +512,11 @@ Now, we can even break down our model in two! Encoder + Decoder
 class MyEncoder(nn.Module):
     def __init__(self, enc_sizes):
         super().__init__()
-        self.conv_blokcs = nn.Sequential(*[conv_block(in_f, out_f, kernel_size=3, padding=1) 
+        self.conv_blocks = nn.Sequential(*[conv_block(in_f, out_f, kernel_size=3, padding=1) 
                        for in_f, out_f in zip(enc_sizes, enc_sizes[1:])])
 
         def forward(self, x):
-            return self.conv_blokcs(x)
+            return self.conv_blocks(x)
         
 class MyDecoder(nn.Module):
     def __init__(self, dec_sizes, n_classes):
@@ -558,7 +557,7 @@ print(model)
 
     MyCNNClassifier(
       (encoder): MyEncoder(
-        (conv_blokcs): Sequential(
+        (conv_blocks): Sequential(
           (0): Sequential(
             (0): Conv2d(1, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
             (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
@@ -740,7 +739,7 @@ print(model)
 
     MyCNNClassifier(
       (encoder): MyEncoder(
-        (conv_blokcs): Sequential(
+        (conv_blocks): Sequential(
           (0): Sequential(
             (0): Conv2d(1, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
             (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
