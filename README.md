@@ -6,7 +6,7 @@ Updated at Pytorch 1.5
 
 You can find the code [here](https://github.com/FrancescoSaverioZuppichini/Pytorch-how-and-when-to-use-Module-Sequential-ModuleList-and-ModuleDict)
 
-[Pytorch](https://pytorch.org/) is an open source deep learning frameworks that provide a smart way to create ML models. Even if the documentation is well made, I still find that most people still are able to write bad and not organized PyTorch code.
+[Pytorch](https://pytorch.org/) is an open source deep learning frameworks that provide a smart way to create ML models. Even if the documentation is well made, I still see that most people don't write well and organized code in PyTorch.
 
 Today, we are going to see how to use the three main building blocks of PyTorch: `Module, Sequential and ModuleList`. We are going to start with an example and iteratively we will make it better.
 
